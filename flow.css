@@ -1,0 +1,47 @@
+body {
+  display:flex;
+  flex-flow: column;
+  align-items: center;
+
+}
+.field {
+  display: flex;
+  width: 500px;
+  height: 200px;
+  border-radius: 3px;
+  flex-flow: column;
+  flex: 3 ;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 5px 2px lightgray;
+  background-color: white;
+  padding: 10px;
+}
+  
+.row {
+  display: grid;
+  grid-template-columns: 30% 40% auto;
+  justify-content: space-around;
+  width: 260px;
+  height: 20px;
+  padding: 5px;
+}
+  
+#history  {
+  display: flex;
+}
+
+.historyCard {
+  height: 100px ;
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px 2px lightgray;
+  background-color: white;
+  margin: 10px;
+  padding: 10px;
+}
+.historyCard ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+  

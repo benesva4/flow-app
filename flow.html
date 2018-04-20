@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Flow</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="flow.css" />
+  <script src="flow.js"></script>
+</head>
+
+<body>
+  <h1>vzt.ninja</h1>
+
+  <div class="field">
+    <div class="row">
+      <label for="flow">Průtok: </label>
+      <input id="flow" type="text">
+      <button onclick="computeFlow()" >Spočítat</button>
+    </div>
+
+    <div class="row">
+      <label for="speed">Rychlost: </label>
+      <input id="speed" type="text">
+      <button onclick="computeSpeed()">Spočítat</button>
+    </div>
+
+    <div class="row">
+      <label for="diameter">Průměr: </label>
+      <input id="diameter" type="text" onkeydown="eraseValue('sideA'), eraseValue('sideB')">
+      <button onclick="computeDiameter()">Spočítat</button>
+    </div>
+
+    <div class="row">
+      <label for="sideA">Strana a: </label>
+      <input id="sideA" type="text" onkeydown="eraseValue('diameter')">
+      <button onclick="computeSideA()">Spočítat</button>
+    </div>
+    
+    <div class="row">
+      <label for="sideB">Strana b: </label>
+      <input id="sideB" type="text" onkeydown="eraseValue('diameter')">
+      <button onclick="computeSideB()">Spočítat</button>
+    </div>
+  </div>
+  <div id="history">
+    
+  </div>
+</body>
+
+</html>
