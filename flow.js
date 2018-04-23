@@ -1,3 +1,11 @@
+
+// variables of the continuity equation
+let flow, speed, diameter, sideA, sideB
+
+// history Array is used as an archive of last computed variables.
+// The history is rendered as the part of the webpage.
+const history = []
+
 // eraseValue() is used for deleting the value of the input field.
 // In this project, it is used to delete input value of the sides
 // when something is typed in the diameter field and vice versa.
@@ -7,38 +15,29 @@ const eraseValue = id => document.getElementById(id).value = null
 // equation, which are kept in the file scope.
 const update = id => parseFloat(document.getElementById(id).value.replace(",", "."))
 
-// variables of the continuity equation
-let flow, speed, diameter, sideA, sideB
-
-// history Array is used as an archive of last computed variables.
-// The history is rendered as the part of the webpage.
-const history = []
-
-// pushCircle() pushes values of the rectangular duct to the historry array.
-// splice() makes max array length 9, while deleteing the oldest entry.
-const pushRectangle = () => {
-    history.push({ Q: flow, v: speed, a: sideA, b: sideB })
-    history.splice(0, history.length - 9)
+const makeHistory = () => {
+    pushHistory()
+    renderHistory()
 }
 
 // pushCircle() pushes values of the rectangular duct to the historry array.
 // splice() makes max array length 9, while deleteing the oldest entry.
-const pushCircle = () => {
-    history.push({ Q: flow, v: speed, d: diameter })
+const pushHistory = () => {
+    history.push({ Q: flow, v: speed, a: sideA, b: sideB, d: diameter })
     history.splice(0, history.length - 9)
 }
+
 
 // renderHistory() maps the data from history array to the card divs.
 // Every time renderHistory() is called, the whole history div is rerendered.
 // It is like this, so rendering of the history div can be changed just by 
 // changing the array.
-
 //TODO: make sure that input fields are allways number and nothing else!
 const renderHistory = () => {
     let template = ""
     const wholeDiv = history.map(card => {
-        template =
-        `<div class="historyCard" >
+        template = template +
+            `<div class="historyCard" >
         <ul>
         <li>Q = ${card.Q} m3/h </li>
         <li>v = ${card.v} m/s </li>
@@ -47,77 +46,78 @@ const renderHistory = () => {
         ${card.b ? `<li>b = ${card.b} mm </li>` : ""}
         </ul>
         </div>
-        ` + template
-        // adding old template on the end so the cards are mapped
-        // newest to oldes
+        `
     })
     document.getElementById("history").innerHTML = template
 }
 
+
 // COMPUTING FUNCTIONS: 
 // Those functions all follows similar pattern:
-// 1) Update known variables.
+// 1) Update known variables of the equation.
 // 2) On the findings of what variables are updated make the right math.
 // 3) Update the field wanted by the user.
-// 4) Push all the relevant variables to the history array.
-// 5) Render history.
+// 4) Push all the relevant variables to the history array and render it.
 
-//TODO: Put rendering of the history to the every function.
-//TODO: Put the pushing to every function.
-//TODO: Try to find out way to render and push without writing again and again. 
 const computeFlow = () => {
-    speed = update("speed")
-    diameter = update("diameter")
+    updateAll()
     if (diameter) {
         flow = (speed * ((diameter ** 2) * 0.25 * Math.PI * 3600 / 1000000)).toFixed(1)
-        pushCircle()
     } else {
         sideA = update("sideA")
         sideB = update("sideA")
-        flow = speed * sideA * sideB * 3600 / 1000000
-        pushRectangle()
+        flow = (speed * sideA * sideB * 3600 / 1000000).toFixed(1)
     }
     document.getElementById("flow").value = flow
-    renderHistory()
+    makeHistory()
 }
 
 const computeSpeed = () => {
-    flow = update("flow")
-    diameter = update("diameter")
+    updateAll()
     if (diameter) {
         speed = (flow / ((diameter ** 2) * 0.25 * Math.PI * 3600 / 1000000).toFixed(1))
-        pushCircle()
     } else {
         sideA = update("sideA")
         sideB = update("sideA")
         speed = (flow / (sideA * sideB * 3600 / 1000000)).toFixed(1)
-        pushRectangle()
     }
     document.getElementById("speed").value = speed
+    makeHistory()
 }
 
 const computeDiameter = () => {
-    flow = update("flow")
-    speed = update("speed")
-    diameter = Math.sqrt(flow / (speed * 0.25 * Math.PI * 3600 / 1000000))
-    pushCircle()
-    document.getElementById("diameter").value = diameter.toFixed(1)
+    eraseValue("sideA")
+    eraseValue("sideB") // erasing sides so they're not present when computing diameter
+    updateAll()
+    diameter = (Math.sqrt(flow / (speed * 0.25 * Math.PI * 3600 / 1000000))).toFixed(1)
+    document.getElementById("diameter").value = diameter
+    makeHistory()
 }
 
 const computeSideA = () => {
-    flow = update("flow")
-    speed = update("speed")
-    sideB = update("sideB")
-    sideA = flow / (speed * sideB * 3600 / 1000000)
-    pushRectangle()
-    document.getElementById("sideA").value = sideA.toFixed(1)
+    eraseValue("diameter")  // erasing diameter so it's not present when computing sides
+    updateAll()
+    sideA = (flow / (speed * sideB * 3600 / 1000000)).toFixed(1)
+    document.getElementById("sideA").value = sideA
+    makeHistory()
 }
 
 const computeSideB = () => {
+    eraseValue("diameter")  // erasing diameter so it's not present when computing sides
+    updateAll()
+    sideB = (flow / (speed * sideA * 3600 / 1000000)).toFixed(1)
+    document.getElementById("sideB").value = sideB
+    makeHistory()
+}
+
+// updateAll() just update all the variables of the equation at once
+/*TODO: make all the variables object with name, value and units
+    so they can be mappable, and there can be possibility for cheanging
+    units*/
+const updateAll = () => {
     flow = update("flow")
     speed = update("speed")
     sideA = update("sideA")
-    sideB = flow / (speed * sideA * 3600 / 1000000)
-    pushRectangle()
-    document.getElementById("sideB").value = sideB.toFixed(1)
+    sideB = update("sideB")
+    diameter = update("diameter")
 }
