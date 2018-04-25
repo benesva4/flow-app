@@ -27,7 +27,6 @@ const pushHistory = () => {
     history.splice(0, history.length - 9)
 }
 
-
 // renderHistory() maps the data from history array to the card divs.
 // Every time renderHistory() is called, the whole history div is rerendered.
 // It is like this, so rendering of the history div can be changed just by 
@@ -75,7 +74,7 @@ const computeFlow = () => {
 const computeSpeed = () => {
     updateAll()
     if (diameter) {
-        speed = (flow / ((diameter ** 2) * 0.25 * Math.PI * 3600 / 1000000).toFixed(1))
+        speed = (flow / ((diameter ** 2) * 0.25 * Math.PI * 3600 / 1000000)).toFixed(1)
     } else {
         sideA = update("sideA")
         sideB = update("sideA")
